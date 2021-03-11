@@ -1,29 +1,18 @@
-const image = document.querySelector('img');
-const jokeDIV = document.querySelector('#display-joke');
-const button = document.querySelector('#get-joke');
+'use strict'
 
-button.addEventListener('click', function(){
-    getRandomJoke();
+const jokeMessage=document.querySelector('#display-joke');
+const button=document.querySelector('#get-joke');
+
+button.addEventListener('click',function(){
+    const promise=fetch('https://api.chucknorris.io/jokes/random');
+    console.log(promise);
+   promise.then((response)=>{
+       return response.json();
+   })
+   .then((response1)=>{
+       console.log(response1);
+       console.log(response1.value);
+       jokeMessage.textContent=response1.value;
+   })
+   .catch((error)=>{new Error('cant fetch joke')})
 })
-
-function getRandomJoke(){
-    const ajax = new XMLHttpRequest;
-    const url = 'https://api.chucknorris.io/jokes/random'
-
-    ajax.open('GET', url, true);
-
-    ajax.onreadystatechange = function(){
-        if(this.status === 200 && this.readyState === 4){
-            console.log(this.responseText);
-            let data = JSON.parse(this.responseText);
-            jokeDIV.innerHTML = `${data.value}`
-        } else {
-            this.onerror = onerror();
-        }
-    }
-    ajax.send();
-}
-
-function onerror(){
-     jokeDIV.textContent = 'There was an error!';  
-}
